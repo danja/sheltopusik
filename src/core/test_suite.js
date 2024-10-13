@@ -49,7 +49,7 @@ async function runTests() {
         ["if", ["=", "condition", false], "consequence", "alternative"]
     ]);
     console.assert(
-        interpreter.interpret(["unless", ["<", 5, 3], "correct", "incorrect"]) === "correct",
+        interpreter.interpret(["unless", ["<", 5, 3], "correct", "alternative"]) === "correct",
         "Macro expansion test failed"
     );
 
