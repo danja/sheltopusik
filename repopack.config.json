@@ -1,0 +1,15 @@
+{
+    "output": {
+        "filePath": "./repopack-sheltopusik.txt",
+        "headerText": "sheltopusik source code",
+        "removeComments": false
+    },
+    "ignore": {
+        "useDefaultPatterns": true,
+        "customPatterns": [
+            "*.log",
+            "docs",
+            "**/*repopack*"
+        ]
+    }
+}
