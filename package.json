@@ -5,6 +5,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "rp": "repopack -c repopack.config.json . ",
     "test": "jasmine --config=jasmine.json --reporter=tests/helpers/reporter.js",
     "docs": "jsdoc -c jsdoc.json",
     "build": "webpack --mode=production --node-env=production",

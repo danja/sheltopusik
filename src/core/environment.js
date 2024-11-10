@@ -1,33 +1,31 @@
+
 // environment.js
 export class Environment {
     constructor(parent = null) {
-        this.vars = new Map();
-        this.parent = parent;
+        this.vars = new Map()
+        this.parent = parent
     }
 
-    define(symbol, value) {
-        this.vars.set(symbol, value);
-    }
-
-    lookup(symbol) {
-        console.log(`Looking up symbol: ${symbol}`);
-        if (this.vars.has(symbol)) {
-            return this.vars.get(symbol);
-        } else if (this.parent) {
-            return this.parent.lookup(symbol);
+    lookup(name) {
+        if (this.vars.has(name)) {
+            return this.vars.get(name)
         }
-        throw new Error(`Undefined symbol: ${symbol}. Available symbols: ${[...this.vars.keys()]}`);
+        if (this.parent) {
+            return this.parent.lookup(name)
+        }
+        throw new Error(`Undefined variable: ${name}`)
+    }
+
+    define(name, value) {
+        this.vars.set(name, value)
+        return value
     }
 
     extend(params, args) {
-        const newEnv = new Environment(this);
-        if (params instanceof Array && args instanceof Array) {
-            params.forEach((param, index) => {
-                newEnv.define(param.value, args[index]);
-            });
-        } else {
-            console.warn('Params or args is not an array in Environment.extend');
-        }
-        return newEnv;
+        const env = new Environment(this)
+        params.forEach((param, i) => {
+            env.define(param.value, args[i])
+        })
+        return env
     }
 }

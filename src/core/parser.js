@@ -1,12 +1,13 @@
-// parser.js
-import { SPAtom, SPList } from './types.js';
+// src/core/parser.js
+import { SPAtom, SPList } from './types.js'
 
 export class Parser {
     parse(jsonExpression) {
         if (Array.isArray(jsonExpression)) {
-            return new SPList(...jsonExpression.map(elem => this.parse(elem)));
-        } else {
-            return new SPAtom(jsonExpression);
+            const list = new SPList()
+            jsonExpression.forEach(elem => list.push(this.parse(elem)))
+            return list
         }
+        return new SPAtom(jsonExpression)
     }
 }
