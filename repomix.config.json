@@ -1,6 +1,6 @@
 {
     "output": {
-        "filePath": "./repopack-sheltopusik.txt",
+        "filePath": "./repomix-sheltopusik.md",
         "headerText": "sheltopusik source code",
         "removeComments": false
     },
@@ -9,7 +9,7 @@
         "customPatterns": [
             "*.log",
             "docs",
-            "**/*repopack*"
+            "**/*repomix*"
         ]
     }
 }
