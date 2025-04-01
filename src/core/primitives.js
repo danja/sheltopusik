@@ -1,5 +1,5 @@
 // src/core/primitives.js
-import { SPList, SPAtom } from './types.js';
+import { SPList, SPAtom, NumberType, StringType, ListType, AtomType, FunctionType, AnyType, SPFunctionType, SPUnionType } from './types.js';
 import log from 'loglevel';
 
 export const primitives = {
@@ -107,6 +107,20 @@ export const primitives = {
     'list?': (x) => x instanceof SPList,
     'null?': (x) => x === null || x === undefined,
     'empty?': (x) => x instanceof SPList && x.length === 0,
+    'atom?': (x) => x instanceof SPAtom,  // Added atom? primitive
+    
+    // Type system primitives
+    'type-of': (x) => {
+        if (typeof x === 'number') return NumberType;
+        if (typeof x === 'string') return StringType;
+        if (x instanceof SPList) return ListType;
+        if (x instanceof SPAtom) return AtomType;
+        if (typeof x === 'function') return x.type || FunctionType;
+        return AnyType;
+    },
+    'type?': (x, type) => type.check(x),
+    'function-type': (paramTypes, returnType) => new SPFunctionType(paramTypes, returnType),
+    'union-type': (types) => new SPUnionType(types),
 
     // Special Forms
     'define': Symbol.for('define'),

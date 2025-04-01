@@ -1,90 +1,59 @@
-import { SPAtom, SPList } from './types.js';
-import { TypeChecker } from './type-checker.js';
-import log from 'loglevel';
+handleLambda([params, bodyOrReturnType, maybeBody, ...restOfBody], env) {
+    let body;
+    let returnType = null;
+    let bodies = [];
 
-export class Evaluator {
-    constructor(globalEnv) {
-        this.globalEnv = globalEnv;
-        this.currentEnv = globalEnv;
-        this.specialForms = new Map([
-            ['define', this.handleDefine.bind(this)],
-            ['lambda', this.handleLambda.bind(this)],
-            ['if', this.handleIf.bind(this)],
-            ['try', this.handleTry.bind(this)]
-        ]);
-        log.setLevel('info');
+    // Handle different arities and type annotations
+    if (maybeBody !== undefined) {
+        // Case with return type annotation
+        if (restOfBody && restOfBody.length > 0) {
+            // Multiple expressions in the body with a return type
+            bodies = [bodyOrReturnType, maybeBody, ...restOfBody];
+            returnType = null; // No return type in this case
+        } else {
+            // Single body with return type
+            body = maybeBody;
+            returnType = bodyOrReturnType;
+        }
+    } else {
+        // Simple case - one expression body with no return type
+        body = bodyOrReturnType;
     }
-
-    eval(expr, env = this.globalEnv) {
-        this.currentEnv = env;
+    
+    const fn = (...args) => {
+        // Create a new environment extending the lexical environment
+        const newEnv = env.extend(params, args);
         
-        if (expr instanceof SPAtom) {
-            if (typeof expr.value === 'number') return expr.value;
-            if (typeof expr.value === 'string') {
-                // Check if this is a string literal or a variable reference
-                if (expr.value.startsWith('"') && expr.value.endsWith('"')) {
-                    return expr.value.slice(1, -1); // Remove quotes for string literals
-                }
-                return env.lookup(expr.value);
+        // Type check arguments if type annotations exist
+        if (fn.type) {
+            TypeChecker.checkFunctionParams(fn, args, 'Lambda');
+        }
+        
+        let result;
+        
+        if (bodies.length > 0) {
+            // Evaluate multiple expressions in sequence, return the last one
+            for (let i = 0; i < bodies.length - 1; i++) {
+                this.eval(bodies[i], newEnv);
             }
-            return env.lookup(expr.value);
+            result = this.eval(bodies[bodies.length - 1], newEnv);
+        } else {
+            // Simple case - evaluate the single body expression
+            result = this.eval(body, newEnv);
         }
-
-        if (expr instanceof SPList) {
-            if (expr.length === 0) return null;
-
-            const [op, ...args] = expr;
-            
-            // Handle special forms
-            if (op instanceof SPAtom && this.specialForms.has(op.value)) {
-                return this.specialForms.get(op.value)(args, env);
+        
+        // Type check return value if return type is specified
+        if (returnType) {
+            const evaledReturnType = this.eval(returnType, env);
+            if (evaledReturnType && typeof evaledReturnType.check === 'function' && 
+                !evaledReturnType.check(result)) {
+                throw new TypeError(`Return value must be of type ${evaledReturnType.name}, got ${typeof result}.`);
             }
-
-            // Handle normal function calls
-            const proc = this.eval(op, env);
-            TypeChecker.checkFunction(proc, 'Procedure');
-            
-            // Evaluate all arguments
-            const evaledArgs = args.map(arg => this.eval(arg, env));
-            
-            // Execute the procedure with the evaluated arguments
-            return proc(...evaledArgs);
         }
-
-        throw new Error(`Unknown expression type: ${expr}`);
-    }
-
-    // For async operations
-    async evalAsync(expr, env = this.globalEnv) {
-        return this.eval(expr, env);
-    }
-
-    handleDefine([symbol, value], env) {
-        return env.define(symbol.value, this.eval(value, env));
-    }
-
-    handleLambda([params, body], env) {
-        const fn = (...args) => {
-            TypeChecker.checkArity(fn, params.length, args.length, 'Lambda');
-            const newEnv = env.extend(params, args);
-            return this.eval(body, newEnv);
-        };
-        fn.expectedTypes = params.map(() => null); // Placeholder for future type annotations
-        fn.isLambda = true; // Mark as a lambda function
-        return fn;
-    }
-
-    handleIf([test, conseq, alt], env) {
-        return this.eval(test, env) ? 
-            this.eval(conseq, env) : 
-            this.eval(alt, env);
-    }
-
-    handleTry([tryExpr, catchExpr], env) {
-        try {
-            return this.eval(tryExpr, env);
-        } catch (error) {
-            return this.eval(catchExpr, env)(error);
-        }
-    }
+        
+        return result;
+    };
+    
+    fn.isLambda = true;
+    return fn;
 }

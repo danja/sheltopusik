@@ -52,14 +52,22 @@ export const modulePrimitives = {
     },
 
     'import': async (names, path, interpreter) => {
+        if (!Array.isArray(names)) {
+            throw new Error('Import requires a list of names as the first argument');
+        }
+        
         const module = await modulePrimitives.require(path, interpreter);
         const env = interpreter.evaluator.currentEnv;
         
-        names.forEach(name => {
-            if (!(name in module)) {
-                throw new Error(`Export '${name}' not found in module ${path}`);
+        // Convert SPList to regular array if needed
+        const namesList = names instanceof SPList ? [...names] : names;
+        
+        namesList.forEach(name => {
+            const nameStr = name instanceof SPAtom ? name.value : name;
+            if (!(nameStr in module)) {
+                throw new Error(`Export '${nameStr}' not found in module ${path}`);
             }
-            env.define(name, module[name]);
+            env.define(nameStr, module[nameStr]);
         });
         
         return null;

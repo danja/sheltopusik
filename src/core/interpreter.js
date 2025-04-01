@@ -3,6 +3,7 @@ import { Environment } from './environment.js';
 import { Evaluator } from './evaluator.js';
 import { primitives } from './primitives.js';
 import { modulePrimitives } from './module-system.js';
+import { NumberType, StringType, BooleanType, ListType, AtomType, AnyType, FunctionType } from './types.js';
 import log from 'loglevel';
 
 export class Interpreter {
@@ -19,6 +20,15 @@ export class Interpreter {
         }).forEach(([name, fn]) => {
             this.env.define(name, fn);
         });
+        
+        // Register basic types in the environment
+        this.env.define('NumberType', NumberType);
+        this.env.define('StringType', StringType);
+        this.env.define('BooleanType', BooleanType);
+        this.env.define('ListType', ListType);
+        this.env.define('AtomType', AtomType);
+        this.env.define('AnyType', AnyType);
+        this.env.define('FunctionType', FunctionType);
     }
 
     async interpretWithModules(jsonProgram) {
@@ -31,9 +41,26 @@ export class Interpreter {
         }
     }
 
-    // Keep synchronous version for backward compatibility
+    // Handle string literals properly in the input program
+    preprocessStringLiterals(program) {
+        if (typeof program === 'string') {
+            // Check if it's a raw string literal without quotes
+            if (program.indexOf('"') !== 0 && program.lastIndexOf('"') !== program.length - 1) {
+                // It's a variable or symbol, leave as is
+                return program;
+            }
+            // It's already a properly quoted string, leave as is
+            return program;
+        } else if (Array.isArray(program)) {
+            return program.map(item => this.preprocessStringLiterals(item));
+        }
+        return program;
+    }
+
     interpret(jsonProgram) {
-        const parsed = this.parser.parse(jsonProgram);
+        // Preprocess string literals
+        const processedProgram = this.preprocessStringLiterals(jsonProgram);
+        const parsed = this.parser.parse(processedProgram);
         
         // Handle programs with definitions followed by a function call
         if (Array.isArray(jsonProgram) && jsonProgram.length > 2 && 
@@ -59,7 +86,7 @@ export class Interpreter {
         if (typeof result === 'function') {
             if (Array.isArray(jsonProgram) && jsonProgram[0] === 'define' && jsonProgram.length === 3) {
                 return result; // Return the function for plain definitions
-            } else if (result.expectedTypes) {
+            } else if (result.isLambda) {
                 try {
                     // Try to execute the function with proper context
                     return result();
