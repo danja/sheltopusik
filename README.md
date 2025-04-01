@@ -6,7 +6,7 @@ Named so you will forget it.
 
 Syntax is JSON. Fibonacci works, Quicksort doesn't.
 
-json```
+```json
 [
   "define", "fib",
   ["lambda", ["n"],
