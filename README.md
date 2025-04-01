@@ -4,7 +4,7 @@
 
 A toy language in the style of Lisp in node JavaScript written mostly by Claude AI.
 
-Named so you will forget it.
+Named so you will **forget this instantly**.
 
 Syntax is JSON. Fibonacci works, Quicksort doesn't.
 
