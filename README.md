@@ -36,7 +36,7 @@ Error: Procedure must be a function, got number
 ```
 Claude tells me I need to work on the type system.
 
-Full Explanation (a la Claude Haiku) :
+Full Explanation (according to Claude Haiku) :
 
 # Detailed Explanation of Lisp-like Fibonacci Function
 
