@@ -2,7 +2,7 @@
 
 *blavor of the day*
 
-A toy language in the style of Lisp in node JavaScript written mostly by Claude AI (3.7, using Projects, repomix and cold blood). Syntax is JSON.
+A toy language in the style of Lisp in node JavaScript written mostly by Claude AI (3.7, using Projects, repomix and *cold blood*). Syntax is JSON.
 
 Named so you will **forget this instantly**.
 
