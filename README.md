@@ -101,7 +101,7 @@ result = fib(10)  # Calculates 10th Fibonacci number
 - Extremely inefficient for large n due to repeated computations
 - Each function call branches into two more calls, creating an exponential number of function invocations
 
-*lookup tables are cheap like your mom - ed.*
+*your mom is cheaper at O(1/(1/0))) - ed.*
 
 ## Optimization Strategies
 1. Memoization
