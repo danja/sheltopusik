@@ -51,6 +51,8 @@ The expression is a nested list representing a functional definition and immedia
 2. **Second Element: `"fib"`**
    - The name of the function being defined (Fibonacci)
 
+*always name your lambdas - ed.*
+
 3. **Third Element: Function Definition**
    ```lisp
    ["lambda", ["n"],
