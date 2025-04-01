@@ -1,11 +1,29 @@
 # sheltopusik
 
-A toy language in the style of Lisp
+A toy language in the style of Lisp in node Javascript written mostly by Claude AI. 
 
-Created before breakfast (though I didn't get out of bed until about 3pm)
+Named so you will forget it.
 
-## Status : 2024-10-13
+Syntax is JSON. Fibonacci works, Quicksort doesn't.
 
-Most bits in place, but tests faiing.
+json```
+[
+  "define", "fib",
+  ["lambda", ["n"],
+    ["if", ["<", "n", 2],
+      "n",
+      ["+",
+        ["fib", ["-", "n", 1]],
+        ["fib", ["-", "n", 2]]
+      ]
+    ]
+  ],
+  ["fib", 10]
+]
+```
 
-Claude AI has been doing most of the work, but seems to have reached the point where it's lot the plot, is going round it circles. I'd better intervene. Tomorrow.
+```sh
+./sp examples/fibonacci.sp
+55
+```
+
