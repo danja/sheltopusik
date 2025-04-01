@@ -6,7 +6,7 @@ A toy language in the style of Lisp in node JavaScript written mostly by Claude 
 
 Named so you will **forget this instantly**.
 
-Fibonacci works, Quicksort doesn't.
+Only Fibonacci works.
 
 ```json
 [
@@ -31,8 +31,8 @@ Fibonacci works, Quicksort doesn't.
 
 ...
 ```sh
-./sp examples/quicksort.sp
-Error: Procedure must be a function, got number
+/sp examples/wordcount.sp
+Error: Undefined variable: The quick brown fox jumps over the lazy dog. The dog sleeps.
 ```
 Claude tells me I need to work on the type system.
 
