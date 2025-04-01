@@ -109,3 +109,5 @@ result = fib(10)  # Calculates 10th Fibonacci number
 3. Iterative approach
 
 These methods can reduce time complexity to O(n) and space complexity to O(1).
+
+*but still will never fill that space of your mom's*
