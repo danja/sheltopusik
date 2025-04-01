@@ -2,11 +2,11 @@
 
 *blavor of the day*
 
-A toy language in the style of Lisp in node JavaScript written mostly by Claude AI.
+A toy language in the style of Lisp in node JavaScript written mostly by Claude AI. Syntax is JSON.
 
 Named so you will **forget this instantly**.
 
-Syntax is JSON. Fibonacci works, Quicksort doesn't.
+Fibonacci works, Quicksort doesn't.
 
 ```json
 [
