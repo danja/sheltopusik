@@ -34,7 +34,7 @@ Fibonacci works, Quicksort doesn't.
 ./sp examples/quicksort.sp
 Error: Procedure must be a function, got number
 ```
-Claude says I need to work on the type system.
+Claude tells me I need to work on the type system.
 
 Full Explanation (a la Claude Haiku) :
 
